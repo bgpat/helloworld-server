@@ -1,13 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"io"
+	"log"
 	"net/http"
 )
 
+type Handle struct{}
+
+func (h *Handle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "hello, world.")
+	log.Printf("%s\t%s\n", r.Method, r.URL)
+}
+
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "hello, world.")
-	})
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", &Handle{})
 }
